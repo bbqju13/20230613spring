@@ -1,0 +1,8 @@
+package com.myweb.www.contorller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class CommentContorller {
+	private static final Logger log = LoggerFactory.getLogger(CommentContorller.class);
+}

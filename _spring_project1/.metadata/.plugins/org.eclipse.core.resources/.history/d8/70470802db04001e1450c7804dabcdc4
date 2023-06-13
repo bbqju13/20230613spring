@@ -1,0 +1,19 @@
+package com.myweb.www.domain;
+
+public class BoardVO {
+	/*bno int not null auto_increment primary key,
+title varchar(255),
+content text,
+writer varchar(255),
+reg_date datetime default now(),
+read_count int,
+isdel varchar(255) default 'n'
+	 * */
+	private int bno;
+	private String title;
+	private String content;
+	private String writer;
+	private String reg_date;
+	private int read_count;
+	private String isdel;
+}

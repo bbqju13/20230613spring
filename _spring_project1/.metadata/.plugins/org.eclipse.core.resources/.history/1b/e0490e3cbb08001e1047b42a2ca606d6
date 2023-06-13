@@ -1,0 +1,40 @@
+async function postcmtToServer(cmtData){
+    try{
+        const url = '/comment/post';
+        const config = {
+            method : 'post',
+            header : {
+                'content-type':'application/json; charset=utf-8',
+            },
+            body : JSON.stringify(cmtData),
+        };
+        const resp = await fetch(url, config);
+        const result = await resp.text(); // isOk
+        return result;
+    }catch(err){
+        console.log(err);
+    }
+    
+}
+document.getElementById('cmtPostBtn').addEventListener('click', ()=>{
+const cmtText = document.getElementById('cmtText').value;
+console.log(cmtText);
+if(cmtText == "" || cmtText == null){
+alert('댓글을 입력해주세요');
+document.getElementById('cmtText').focus();
+return false;
+}else{
+    let cmtData = {
+        bno : bnoVal,
+        writer : document.getElementById('cmtWriter').innerText,
+        content : cmtText
+    };
+    console.log(cmtData);
+    postcmtToServer(cmtData).then(result =>{
+        // isOk 확인 데이터
+        if(result > 0){
+            alert('댓글 등록 성공' + cmtData.content);
+        }
+    })
+}
+})

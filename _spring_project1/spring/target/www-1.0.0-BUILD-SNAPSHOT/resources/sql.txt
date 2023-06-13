@@ -1,0 +1,38 @@
+DB설정
+- user table
+id, pw, name, email, home, age, reg_date
+primary key id
+
+create table user(
+id varchar(255) not null primary key,
+pw varchar(255) not null,
+name varchar(255),
+email varchar(255),
+home varchar(255),
+age int,
+reg_date datetime default now()
+);
+********************************************
+-root 접속
+create database springtest;
+use mysql
+
+-- user생성
+create user springuser@localhost identified by 'mysql';
+-- 권한부여
+grant all privileges on springtest.* to 'springuser'@'localhost' with grant option;
+flush privilegs;
+
+-- user변경 접속
+springuser
+*********************************************
+2023-06-07
+create table board(
+bno int not null auto_increment primary key,
+title varchar(255),
+content text,
+writer varchar(255),
+reg_date datetime default now(),
+read_count int,
+isdel varchar(255) default 'n'
+);

@@ -1,0 +1,84 @@
+package com.myweb.www.service;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.myweb.www.domain.UserVO;
+import com.myweb.www.repository.UserDAO;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class UserServiceImpl implements UserService {
+	private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	@Inject
+	private UserDAO udao;
+	@Inject
+	BCryptPasswordEncoder Pwencoder;
+
+	@Override
+	public int signUp(UserVO uvo) {
+		// TODO Auto-generated method stub
+		log.info(" >>>>> sginUp service in >>>>> : ");
+		
+//		아이디가 중복되면 회원가입 실패
+//		아이디주고 DB에서 일치하는 유저를 달라고 요청
+//		일치하는 유저가 없으면 가입(1) 있으면 오류(0)
+		UserVO tmpUser = udao.getUser(uvo.getId());
+		
+//		tmpUser가 null이 아니라면 이미 가입된 회원 = ID중복 => 회원가입 실패
+		if(tmpUser != null) {
+			return 0;
+		}
+		
+//		ID가 중복이 안되면 회원가입 진행
+//		PW가 null이거나 값이 없으면 => 회원가입 실패
+		if(uvo.getId() == null || uvo.getId().length() == 0 ) {
+			return 0;
+		}
+		if(uvo.getPw() == null || uvo.getPw().length() == 0) {
+			return 0;
+		}
+		
+//		회원가입 진행
+		String pw = uvo.getPw();
+		
+//		encode (암호화) / matches (원래비번 or 암호화된 비번)
+		String encodePw = Pwencoder.encode(pw); // 기존 PW암호화
+		
+//		uvod의 PW를 암호화된 PW로 수정
+		uvo.setPw(encodePw);
+		
+//		회원가입 => insert
+		int isOk = udao.insert(uvo);
+		return isOk;
+	}
+
+	@Override
+	public UserVO isUser(String id, String pw) {
+		// TODO Auto-generated method stub
+		log.info(" >>>>> loginservice in >>>>> : ");
+		
+		// id를 주고 해당 id에 일치하는 객체를 DB에서 호출
+		UserVO user = udao.getUser(id); // 위에 했던 메서드 호출
+		
+		// 가져온 user의 비번과 입력받은 비번이 같은지 확인
+		// id가 일치하는 객체가 없을경우.
+		if(user == null) {
+			return null;
+		}
+		// Pwencoder.matches(원래비번, 암호화된 비번) : 매치가 된다면 true
+		if(Pwencoder.matches(pw, user.getPw())) {
+			return user;
+		}else {
+			return null;
+		}
+		return null;
+	}
+}

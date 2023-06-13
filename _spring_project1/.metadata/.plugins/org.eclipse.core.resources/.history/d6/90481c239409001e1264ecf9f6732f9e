@@ -1,0 +1,100 @@
+package com.myweb.www.contorller;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.myweb.www.domain.CommentVO;
+import com.myweb.www.service.CommentService;
+
+@RequestMapping("/comment/*")
+@Controller
+public class CommentContorller {
+	private static final Logger log = LoggerFactory.getLogger(CommentContorller.class);
+
+	@Inject
+	private CommentService csv;
+
+	// ResponseEntity
+	// value : mapping 값 설정
+	// consumes : 가져오는 값의 형태
+	// produces : 값을 보낼때의 형식
+	@PostMapping(value = "/post", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public ResponseEntity<String> post(@RequestBody CommentVO cvo) {
+		log.info(" >>>>> cvo >>>>> : " + cvo);
+//		DB 연결
+
+		int isOk = csv.cmtService(cvo);
+
+		// 리턴을 위해서는 response의 통신상태를 같이 리턴
+		// ew ResponseEntity<String>("1", HttpStatus.OK > 여기가 담는 값
+		return isOk > 0 ? new ResponseEntity<String>("1", HttpStatus.OK)
+				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@GetMapping(value = "/list/{bno}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<CommentVO>> list(@PathVariable("bno") int bno) {
+		log.info(" >>>>> CMT LIST BNO >>>>> : " + bno);
+		// DB 요청
+		List<CommentVO> list = csv.getList(bno);
+		log.info(" >>>>> list size >>>>> : " + list.size());
+		return new ResponseEntity<List<CommentVO>>(list, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/update", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public ResponseEntity<String> update(@RequestBody CommentVO cvo) {
+		log.info(">>>>> update CVO >>>>> : " + cvo);
+//		댓글 수정 기능
+
+//		주어진 댓글 정보(cvo)를 사용하여 댓글을 DB에서 수정한다.	
+		int isOk = csv.updateComment(cvo);
+
+//		수정작업의 결과에 따라 성공시 HTTP상태코드 200(OK)과 '1'을 실패 시 HTTP 상태 코드 500(INTERNAL_SERVER_ERROR)과 "0"을 응답 본문에 담아 반환
+		return isOk > 0 ? new ResponseEntity<String>("1", HttpStatus.OK)
+				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@PostMapping(value = "/delete/{cno}", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public ResponseEntity<String> delete(@PathVariable("cno") int cno) {
+		log.info(">>>>> Delete CNO >>>>> : " + cno);
+//		댓글삭제 기능
+
+//		주어진 댓글 번호(cno)를 사용하여 DB에서 삭제 한다.		
+		int isOk = csv.deleteComment(cno);
+
+//		수정작업의 결과에 따라 성공시 HTTP상태코드 200(OK)과 '1'을 실패 시 HTTP 상태 코드 500(INTERNAL_SERVER_ERROR)과 "0"을 응답 본문에 담아 반환		
+		return isOk > 0 ? new ResponseEntity<String>("1", HttpStatus.OK)
+				: new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+//	@PutMapping(value = "/{cno}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
+//	public ResponseEntity<String> edit(@PathVariable("cno")int cno, @RequestBody CommentVO cvo){
+//		log.info("cno");
+//		log.info("cvo");
+//		int isOk = csv.edit(cvo);
+//		return isOk>0?
+//				new ResponseEntity<String>("1", HttpStatus.OK) : new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+//	}
+	
+	@DeleteMapping(value="/{cno}", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> remove(@PathVariable("cno")int cno){
+		log.info("cno" + cno);
+		int isOk = csv.remove(cno);
+		return isOk > 0?
+				new ResponseEntity<String>("1", HttpStatus.OK) : new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+}

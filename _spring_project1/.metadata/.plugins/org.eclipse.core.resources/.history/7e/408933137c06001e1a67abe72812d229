@@ -1,0 +1,62 @@
+package com.myweb.www.domain;
+
+public class CommentVO {
+	/*create table comment(
+cno int not null auto_increment primary key,
+bno int not null,
+writer varchar(255) not null,
+content text,
+reg_date datetime default now(),
+mod_date datetime default now()
+);
+	 * */
+	private int cno;
+	private int bno;
+	private String writer;
+	private String content;
+	private String reg_date;
+	private String mod_date;
+	public int getCno() {
+		return cno;
+	}
+	public void setCno(int cno) {
+		this.cno = cno;
+	}
+	public int getBno() {
+		return bno;
+	}
+	public void setBno(int bno) {
+		this.bno = bno;
+	}
+	public String getWriter() {
+		return writer;
+	}
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getReg_date() {
+		return reg_date;
+	}
+	public void setReg_date(String reg_date) {
+		this.reg_date = reg_date;
+	}
+	public String getMod_date() {
+		return mod_date;
+	}
+	public void setMod_date(String mod_date) {
+		this.mod_date = mod_date;
+	}
+	@Override
+	public String toString() {
+		return "CommentVO [cno=" + cno + ", bno=" + bno + ", writer=" + writer + ", content=" + content + ", reg_date="
+				+ reg_date + ", mod_date=" + mod_date + "]";
+	}
+	
+	
+}

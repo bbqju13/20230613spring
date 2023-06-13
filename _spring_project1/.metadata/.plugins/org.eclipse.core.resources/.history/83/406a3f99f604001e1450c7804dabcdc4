@@ -1,0 +1,48 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>detail Page</title>
+</head>
+<body>
+<h1>detail Page</h1>
+
+<table>
+		<tr>
+			<th>번호</th>
+			<td>${board.bno }</td>
+		</tr>
+		<tr>
+			<th>제목</th>
+			<td>${board.title }</td>
+		</tr>
+		<tr>
+			<th>작성자</th>
+			<td>${board.writer }</td>
+		</tr>
+		<tr>
+			<th>조회수</th>
+			<td>${board.read_count }</td>
+		</tr>
+		<tr>
+			<th>등록일</th>
+			<td>${board.reg_date }</td>
+		</tr>
+		<tr>
+			<th>내용</th>
+			<td>${board.content }</td>
+		</tr>
+</table>
+<a href="/board/list"> <button>목록</button> </a>  <br> <br>
+
+<!-- 로그인 ID와 게시글의 작성자가 같지 않으면 수정,삭제 버튼 안보이게 -->
+
+<c:if test="${ses != null && ses.id == board.writer }">
+<a href="/board/modify?bno=${board.bno }"> <button>수정</button> </a> <br> <br>
+<a href="/board/delete?bno=${board.bno }"> <button>삭제</button> </a> <br> <br>
+</c:if>
+</body>
+</html>
