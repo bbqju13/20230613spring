@@ -25,5 +25,7 @@ public interface BoardDAO {
 
 	List<BoardVO> searchList(String keyword);
 
+	int selectBno();
+
 
 }

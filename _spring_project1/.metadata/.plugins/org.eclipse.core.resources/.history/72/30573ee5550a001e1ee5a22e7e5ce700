@@ -1,0 +1,35 @@
+package com.myweb.www.Handler;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.myweb.www.domain.FileVO;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@AllArgsConstructor
+@Slf4j
+@Component
+public class FileHandler {
+	private static final Logger log = LoggerFactory.getLogger(FileHandler.class);
+	
+	// 경로는 항상 복붙하기
+	private final String UP_DIR = "D:\\_myweb\\_java\\fileupload";
+	
+	public List<FileVO> uploadFiles(MultipartFile[] files){
+		LocalDate date = LocalDate.now();
+		log.info(" >>>>> DATE >>>>> : " + date);
+		String today = date.toString(); // <2023-06-14>date 객체를 String으로 변환
+		// today => 폴더 구조로 변경 2023\06\14 (윈도우)
+		// 2023/06/14 (리눅스 or 맥)
+		today = today.replace("-", File.separator);
+	}
+	
+}

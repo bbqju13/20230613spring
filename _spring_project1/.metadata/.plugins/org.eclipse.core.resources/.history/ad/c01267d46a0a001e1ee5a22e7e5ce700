@@ -1,0 +1,12 @@
+package com.myweb.www.repository;
+
+import com.myweb.www.domain.FileVO;
+
+public class FileDAO {
+
+	public int insertFile(FileVO fvo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

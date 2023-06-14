@@ -1,0 +1,66 @@
+package com.myweb.www.Handler;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.myweb.www.domain.FileVO;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@AllArgsConstructor
+@Slf4j
+@Component
+public class FileHandler {
+	private static final Logger log = LoggerFactory.getLogger(FileHandler.class);
+	
+	// 경로는 항상 복붙하기
+	private final String UP_DIR = "D:\\_myweb\\_java\\fileupload";
+	
+	public List<FileVO> uploadFiles(MultipartFile[] files){
+		LocalDate date = LocalDate.now();
+		log.info(" >>>>> DATE >>>>> : " + date);
+		String today = date.toString(); // <2023-06-14>date 객체를 String으로 변환
+		// today => 폴더 구조로 변경 2023\06\14 (윈도우)
+		// 2023/06/14 (리눅스)
+		today = today.replace("-", File.separator);
+		
+		// today로 폴더 구성
+		File folders = new File(UP_DIR, today);
+		
+		// 폴더가 기존에 있다면 생성 X / 없다면 생성 O
+		if(folders.exists()) {
+			folders.mkdirs(); // 폴더 생성명령 mkdir 여러개니깐 mkdirs
+		}
+		// 경로 설정
+		List<FileVO> Flist = new ArrayList<FileVO>();
+		for(MultipartFile file : files) {
+			FileVO fvo = new FileVO();
+			fvo.setSave_dir(today); // 파일 경로 설정
+			fvo.setFile_size(file.getSize()); // 파일 사이즈 설정 return Long
+			
+			String originalFileName = file.getOriginalFilename();
+			String onlyFileName = originalFileName.substring(originalFileName.lastIndexOf(File.separator)+1);
+			log.info(" >>>>> only file name >>>>> : " + onlyFileName); // 파일명
+			fvo.setFile_name(onlyFileName); // 파일 이름 설정
+			
+			// UUID 생성
+			UUID uuid = UUID.randomUUID();
+			fvo.setUuid(uuid.toString()); // 객체로 들어와서 tostring설정 uuid설정
+			
+			// <-- 여기까지 filevo(fvo)에 저장할 정보 생성 -> set
+			
+			// 디스크에 파일 저장
+			String fullFileName = uuid.toString()+"_"+onlyFileName;
+		}
+	}
+	
+}

@@ -37,6 +37,9 @@
 	<select id="getTotalCnt" resultType="int">
 		select count(bno) from board where isdel = 'n' <include refid="searchList"></include>
 	</select>
+	<select id="selectBno" resultType="int">
+		select max(bno) from board
+	</select>
 	
 	
 	<sql id="searchList">

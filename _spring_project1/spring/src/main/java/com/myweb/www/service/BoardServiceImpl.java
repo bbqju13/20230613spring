@@ -8,10 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.myweb.www.domain.BoardDTO;
 import com.myweb.www.domain.BoardVO;
+import com.myweb.www.domain.FileVO;
 import com.myweb.www.domain.PagingVO;
 import com.myweb.www.domain.UserVO;
 import com.myweb.www.repository.BoardDAO;
+import com.myweb.www.repository.FileDAO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,6 +25,8 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Inject
 	private BoardDAO bdao;
+	@Inject
+	private FileDAO fdao;
 
 	@Override
 	public int register(BoardVO bvo) {
@@ -101,6 +106,34 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		log.info(" >>>>> board searchList in >>>>> ");
 		return bdao.searchList(keyword);
+	}
+
+
+
+	@Override
+	public int register(BoardDTO bdto) {
+		// TODO Auto-generated method stub
+		log.info(" >>>>> bvo+Flist in >>>>> ");
+//		기존 게기슬에 대한 내용 DB 저장 내용 호출
+		int isOk = bdao.insert(bdto.getBvo());
+		if(bdto.getFlist() == null) { // 파일이 없다를 의미
+			isOk*= 1; // 값이 없기때문에 성공 한걸로 침.
+		}else {
+			// bvo가 DB에 들어가고, 파일 개수가 있다면
+			if(isOk>0 && bdto.getFlist().size()>0) {
+				// register는 등록시 bno가 결정되어있지 않음.
+//				int bno = bdto.getBvo().getBno(); 이건 update때 가능.
+				int bno = bdao.selectBno(); // 방금 저장된 bvo 의 bno리턴받기
+				
+				// Flist의 모든 file의  bno를 방금받은 bno로 set
+				for(FileVO fvo : bdto.getFlist()) {
+					fvo.setBno(bno);
+					log.info(" >>>>> insert File >>>>> : "+fvo.toString());
+					isOk *= fdao.insertFile(fvo);
+				}
+			}
+		}
+		return isOk;
 	}
 
 

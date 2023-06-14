@@ -25,7 +25,7 @@ reg_date datetime default now()
 	private String file_name;
 	private int file_type;
 	private int bno;
-	private int file_size;
+	private long file_size;
 	private String reg_date;
 	
 	public FileVO() {}
@@ -70,8 +70,13 @@ reg_date datetime default now()
 		this.bno = bno;
 	}
 
-	public int getFile_size() {
+
+	public long getFile_size() {
 		return file_size;
+	}
+
+	public void setFile_size(long file_size) {
+		this.file_size = file_size;
 	}
 
 	public void setFile_size(int file_size) {
