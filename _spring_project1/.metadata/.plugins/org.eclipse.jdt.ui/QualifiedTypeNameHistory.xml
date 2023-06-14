@@ -51,7 +51,7 @@
     <fullyQualifiedTypeName name="lombok.NoArgsConstructor"/>
     <fullyQualifiedTypeName name="com.myweb.www.domain.FileVO"/>
     <fullyQualifiedTypeName name="javax.inject.Inject"/>
-    <fullyQualifiedTypeName name="com.myweb.www.domain.BoardDTO"/>
     <fullyQualifiedTypeName name="com.myweb.www.domain.BoardVO"/>
     <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.myweb.www.domain.BoardDTO"/>
 </qualifiedTypeNameHistroy>

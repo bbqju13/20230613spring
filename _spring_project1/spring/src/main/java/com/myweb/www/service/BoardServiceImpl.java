@@ -109,7 +109,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 
-
+// 파일 처리 라인
 	@Override
 	public int register(BoardDTO bdto) {
 		// TODO Auto-generated method stub
@@ -134,6 +134,18 @@ public class BoardServiceImpl implements BoardService {
 			}
 		}
 		return isOk;
+	}
+
+
+
+	@Override
+	public BoardDTO getDetailfile(int bno) {
+		// TODO Auto-generated method stub
+		log.info(" >>>>> detail file in >>>>> : ");
+		BoardDTO bdto = new BoardDTO();
+		bdto.setBvo(bdao.getDetail(bno)); // bvo 호출 앞에 detail에 있던거 호출 
+		bdto.setFlist(fdao.getFileList(bno)); // filelist 호출
+		return bdto;
 	}
 
 

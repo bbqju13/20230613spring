@@ -31,4 +31,6 @@ public interface BoardService {
 
 	int register(BoardDTO bdto);
 
+	BoardDTO getDetailfile(int bno);
+
 }

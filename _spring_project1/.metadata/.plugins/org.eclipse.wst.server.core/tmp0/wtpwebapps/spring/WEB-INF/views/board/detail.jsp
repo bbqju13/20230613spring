@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +13,8 @@
 <body>
 <h1>detail Page</h1>
 
-<table>
+<c:set var="board" value="#{boardDTO.bvo }"></c:set>
+<table border="2">
 		<tr>
 			<th>번호</th>
 			<td>${board.bno }</td>
@@ -38,6 +40,35 @@
 			<td>${board.content }</td>
 		</tr>
 </table>
+<!-- file 표현 영역 -->
+<div>
+	<!-- <c:set var="Flist" value="#{boardDTO.Flist }"></c:set>  -->
+	<ul>
+		<c:forEach items="${Flist }" var="fvo">
+			<li>
+				<c:choose>
+					<c:when test="${fvo.file_type > 0 }">
+						<div>
+							<img alt="XXX" src="/upload/${fn:replace(fvo.save_dir, '\\','/') }/${fvo.uuid}_th_${fvo.file_name}">
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div>
+							<!-- 클립모양 같은 파일 아이콘 모양 값을 넣을 수 있음. -->
+						</div>
+					</c:otherwise>
+				</c:choose>
+					<div>
+						<div>
+						 ${fvo.file_name }
+						</div>
+						 ${fvo.reg_date }
+					</div>
+					<span>${fvo.file_size } Bytes</span>
+			</li>
+		</c:forEach>
+	</ul>
+</div>
  <br> <br> <br>
 
 <a href="/board/list"> <button>목록</button> </a>  &nbsp &nbsp &nbsp

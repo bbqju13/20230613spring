@@ -96,13 +96,18 @@ public class BoardContorller {
 		log.info(" >>>>> bno >>>>> : " + bno);
 		log.info(" >>>>> mapping >>>>> : " + r.getRequestURI());
 		String mapping = r.getRequestURI();
-		BoardVO bvo = bsv.getDetail(bno);
+//		BoardVO bvo = bsv.getDetail(bno);
+		BoardDTO bdto = bsv.getDetailfile(bno);
+		
 		String path = mapping.substring(mapping.lastIndexOf("/")+1);
 		log.info(" >>>>> path >>>>> : " + path);
 		if(path.equals("detail")) {
 			int isOk = bsv.readCount(bno);
 		}
-		m.addAttribute("board", bvo);
+		
+//		m.addAttribute("boardDTO", bdto);
+		m.addAttribute("board", bdto.getBvo());
+		m.addAttribute("Flist", bdto.getFlist());
 	}
 	
 	@PostMapping("/modify")
