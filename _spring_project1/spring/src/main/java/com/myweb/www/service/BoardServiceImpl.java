@@ -27,6 +27,7 @@ public class BoardServiceImpl implements BoardService {
 	private BoardDAO bdao;
 	@Inject
 	private FileDAO fdao;
+	
 
 	@Override
 	public int register(BoardVO bvo) {
@@ -63,15 +64,47 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int modify(BoardVO bvo, UserVO user) {
+	public int modify(BoardDTO bdto, UserVO user) {
 		// TODO Auto-generated method stub
 		log.info(" >>>>> board modify in >>>>> ");
-		BoardVO tmpBoard = bdao.getDetail(bvo.getBno()); // 해당 글의 게시글 호출
+		BoardVO tmpBoard = bdao.getDetail(bdto.getBvo().getBno()); // 해당 글의 게시글 호출
 		if(user == null || !user.getId().equals(tmpBoard.getWriter())) {
 			
 			return 0;
 		}
-		return bdao.updateBoard(bvo);
+		int isOk = bdao.updateBoard(bdto.getBvo());
+		if(isOk > 0) {
+			List<FileVO> originalFiles = fdao.getFileList(bdto.getBvo().getBno());
+			List<FileVO> newFiles = bdto.getFlist();
+			
+			for(FileVO file : originalFiles) {
+				boolean isDel = true;
+				for(FileVO newFile : newFiles) {
+					if(file.getBno() == newFile.getBno()) {
+						isDel = false;
+						break;
+					}
+				}
+				if(isDel) {
+					isOk *= fdao.deleteFile(file.getBno());
+				}
+			}
+			for(FileVO newFile : newFiles) {
+				boolean isNew = true;
+				for(FileVO file : originalFiles) {
+					if(file.getBno() == newFile.getBno()) {
+						isNew = false;
+						break;
+					}
+				}
+				if(isNew) {
+					newFile.setBno(bdto.getBvo().getBno());
+					isOk *= fdao.insertFile(newFile);
+				}
+			}
+			
+		}
+		return isOk;
 	}
 	
 	@Override
@@ -150,4 +183,41 @@ public class BoardServiceImpl implements BoardService {
 
 
 
+	@Override
+	public int removeFile(String uuid) {
+		// TODO Auto-generated method stub
+		log.info(" >>>>> delete file in >>>>> : ");
+		
+		return fdao.deleteFile(uuid);
+	}
+
+
+
+	@Override
+	public int modifyFile(BoardDTO bdto, UserVO user) {
+		// TODO Auto-generated method stub
+		log.info(" >>>>> board modifyfile in >>>>> ");
+		BoardVO tmpBoard = bdao.getDetail(bdto.getBvo().getBno()); // 해당 글의 게시글 호출
+		if(user == null || !user.getId().equals(tmpBoard.getWriter())) {
+			
+			
+		return 0;
+	}
+		int isOk = bdao.updateBoard(bdto.getBvo());
+		if(bdto.getFlist() == null) {
+			isOk *= 1;
+		}else {
+			if(isOk>0 && bdto.getFlist().size()>0) {
+				int bno = bdto.getBvo().getBno();
+				for(FileVO fvo : bdto.getFlist()) {
+					fvo.setBno(bno);
+					log.info(" >>>>> insert File >>>>> : "+fvo.toString());
+					isOk *= fdao.insertFile(fvo); // 추가한 파일 추가
+					
+					// 삭제는 별도
+				}
+			}
+		}
+		return isOk;
+	}
 }

@@ -13,7 +13,7 @@
 <body>
 <h1>detail Page</h1>
 
-<c:set var="board" value="#{boardDTO.bvo }"></c:set>
+<c:set var="board" value="${boardDTO.bvo }"></c:set>
 <table border="2">
 		<tr>
 			<th>번호</th>
@@ -42,9 +42,9 @@
 </table>
 <!-- file 표현 영역 -->
 <div>
-	<!-- <c:set var="Flist" value="#{boardDTO.Flist }"></c:set>  -->
+	<c:set var="flist" value="#{boardDTO.flist }"></c:set>
 	<ul>
-		<c:forEach items="${Flist }" var="fvo">
+		<c:forEach items="${flist }" var="fvo">
 			<li>
 				<c:choose>
 					<c:when test="${fvo.file_type > 0 }">
@@ -118,7 +118,7 @@
 
 
 <script type="text/javascript">
-const bnoVal = '<c:out value="${board.bno}" />';
+const bnoVal = '<c:out value="${boardDTO.bvo.bno}" />';
 console.log(" >>>>> bno >>>>> : " + bnoVal);
 </script>
 <script type="text/javascript" src="/resources/js/comment.js"></script>

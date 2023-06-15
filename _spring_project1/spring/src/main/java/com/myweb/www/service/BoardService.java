@@ -21,7 +21,7 @@ public interface BoardService {
 
 	int delete(int bno);
 
-	int modify(BoardVO bvo, UserVO user);
+	int modify(BoardDTO bdto, UserVO user);
 
 	List<BoardVO> getList(PagingVO pvo);
 
@@ -32,5 +32,9 @@ public interface BoardService {
 	int register(BoardDTO bdto);
 
 	BoardDTO getDetailfile(int bno);
+
+	int removeFile(String uuid);
+
+	int modifyFile(BoardDTO bdto, UserVO user);
 
 }

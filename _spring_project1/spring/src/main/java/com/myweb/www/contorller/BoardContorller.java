@@ -8,9 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -105,18 +110,26 @@ public class BoardContorller {
 			int isOk = bsv.readCount(bno);
 		}
 		
-//		m.addAttribute("boardDTO", bdto);
-		m.addAttribute("board", bdto.getBvo());
-		m.addAttribute("Flist", bdto.getFlist());
+		m.addAttribute("boardDTO", bdto);
+		
+//		m.addAttribute("board", bdto.getBvo());
+//		m.addAttribute("flist", bdto.getFlist());
 	}
 	
 	@PostMapping("/modify")
-	public String update(RedirectAttributes rAtt, BoardVO bvo) {
+	public String update(RedirectAttributes rAtt, @RequestParam(name="files", required = false)MultipartFile[] files, BoardVO bvo) {
+		log.info(" >>>>> files >>>>> : " + files.toString());
 		log.info(" >>>>> bvo >>>>> : " + bvo.toString());
 		// 세션의 로그인 ID가 작성자와 일치하면 삭제 아니면 삭제불가
 		UserVO user = udao.getUser(bvo.getWriter());
+		List<FileVO>  flist = null;
+		if(files[0].getSize()>0) {
+			flist = fhd.uploadFiles(files);
+		}
+		BoardDTO bdto = new BoardDTO(bvo, flist);
+		int isOk = bsv.modifyFile(bdto, user);
 		// DB상 update 하기
-		int isOk = bsv.modify(bvo, user);
+//		int isOk = bsv.modify(bdto, user);
 		log.info(" >>>>> modify >>>>> : " + (isOk > 0 ? "성공" : "실패"));
 		rAtt.addAttribute("msg_modify", isOk > 0 ? "1" : "0");
 		return "redirect:/board/list";
@@ -130,6 +143,13 @@ public class BoardContorller {
 		log.info(" >>>>> delete >>>>> : " + (isOk > 0 ? "성공" : "실패"));
 		rAtt.addAttribute("isOk", isOk);
 		return "redirect:/board/list";
+	}
+	
+	@DeleteMapping(value = "/file/{uuid}", produces = {MediaType.TEXT_PLAIN_VALUE} )
+	public ResponseEntity<String> removeFile(@PathVariable("uuid")String uuid){
+		log.info(" >>>>> uuid >>>>> : "+uuid);
+		return bsv.removeFile(uuid) > 0 ?
+				new ResponseEntity<String>("1", HttpStatus.OK) : new ResponseEntity<String>("0", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 //	@GetMapping("/delete")

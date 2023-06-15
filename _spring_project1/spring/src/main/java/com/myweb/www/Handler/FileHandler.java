@@ -73,7 +73,7 @@ public class FileHandler {
 				if(isImgFile(storeFile)) {
 					fvo.setFile_type(1);
 					File thumbNail = new File(folders, uuid.toString()+"_th_"+onlyFileName); // 썸네일 파일 경로
-					Thumbnails.of(storeFile).size(75, 75).toFile(thumbNail);
+					Thumbnails.of(storeFile).size(100, 100).toFile(thumbNail);
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
